@@ -67,6 +67,10 @@ const (
 	// disk to wipe on the next boot and reboot.
 	KernelParamWipe = "talos.experimental.wipe"
 
+	// KernelParamWipeWithoutReboot is the kernel parameter name for specifying the
+	// restart behavior after wiping the disks
+	KernelParamWipeWithoutReboot = "talos.experimental.wipe_without_reboot"
+
 	// KernelParamDeviceSettleTime is the kernel parameter name for specifying the
 	// extra device settle timeout.
 	KernelParamDeviceSettleTime = "talos.device.settle_time"
