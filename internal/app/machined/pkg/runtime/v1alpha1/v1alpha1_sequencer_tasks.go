@@ -1500,6 +1500,8 @@ func stopAndRemoveAllPods(stopAction cri.StopAction) runtime.TaskExecutionFunc {
 // ResetSystemDiskPartitions represents the task for wiping the system disk partitions.
 func ResetSystemDiskPartitions(seq runtime.Sequence, _ any) (runtime.TaskExecutionFunc, string) {
 	wipeStr := procfs.ProcCmdline().Get(constants.KernelParamWipe).First()
+	wipeWithoutRebootStr := procfs.ProcCmdline().Get(constants.KernelParamWipeWithoutReboot).First()
+	wipeWithoutReboot, _ := strconv.ParseBool(pointer.SafeDeref(wipeWithoutRebootStr)) //nolint:errcheck
 	reboot, _ := Reboot(seq, nil)
 
 	if pointer.SafeDeref(wipeStr) == "" {
@@ -1523,6 +1525,9 @@ func ResetSystemDiskPartitions(seq runtime.Sequence, _ any) (runtime.TaskExecuti
 
 			logger.Printf("finished resetting system disks")
 
+			if wipeWithoutReboot {
+				return nil
+			}
 			return reboot(ctx, logger, r) // only reboot when we wiped boot partition
 		}, "wipeSystemDisk"
 	}
@@ -1551,7 +1556,7 @@ func ResetSystemDiskPartitions(seq runtime.Sequence, _ any) (runtime.TaskExecuti
 			return t.GetLabel() == constants.BootPartitionLabel
 		})
 
-		if bootWiped {
+		if bootWiped && !wipeWithoutReboot {
 			return reboot(ctx, logger, r) // only reboot when we wiped boot partition
 		}
 

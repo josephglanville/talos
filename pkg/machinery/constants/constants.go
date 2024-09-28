@@ -67,6 +67,10 @@ const (
 	// disk to wipe on the next boot and reboot.
 	KernelParamWipe = "talos.experimental.wipe"
 
+	// KernelParamWipeWithoutReboot is the kernel parameter name for specifying the
+	// restart behavior after wiping the disks
+	KernelParamWipeWithoutReboot = "talos.experimental.wipe_without_reboot"
+
 	// KernelParamCGroups is the kernel parameter name for specifying the
 	// cgroups version to use (default is cgroupsv2, setting this kernel arg to '0' forces cgroupsv1).
 	KernelParamCGroups = "talos.unified_cgroup_hierarchy"
