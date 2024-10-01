@@ -184,13 +184,25 @@ func (*Sequencer) Install(r runtime.Runtime) []runtime.Phase {
 			).Append(
 				"volumeFinalize",
 				TeardownVolumeLifecycle,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					wipe := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(wipe) == ""
+				},
 				"stopEverything",
 				StopAllServices,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					wipe := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(wipe) == ""
+				},
 				"kexec",
 				KexecPrepare,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					wipe := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(wipe) == ""
+				},
 				"reboot",
 				Reboot,
 			)
