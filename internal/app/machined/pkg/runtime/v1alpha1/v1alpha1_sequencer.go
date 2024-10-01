@@ -171,16 +171,32 @@ func (*Sequencer) Install(r runtime.Runtime) []runtime.Phase {
 			).Append(
 				"saveStateEncryptionConfig",
 				SaveStateEncryptionConfig,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
+				},
 				"volumeFinalize",
 				TeardownVolumeLifecycle,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
+				},
 				"stopEverything",
 				StopAllServices,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
+				},
 				"kexec",
 				KexecPrepare,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
+				},
 				"reboot",
 				Reboot,
 			)

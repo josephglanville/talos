@@ -73,6 +73,10 @@ const (
 	// extra device settle timeout.
 	KernelParamDeviceSettleTime = "talos.device.settle_time"
 
+	// KernelParamRamdisk is the kernel parameter name for specifying
+	// Talos to use experimental ramdisk support
+	KernelParamRamdisk = "talos.experimental.ramdisk"
+
 	// KernelParamCGroups is the legacy kernel parameter not supported anymore.
 	KernelParamCGroups = "talos.unified_cgroup_hierarchy"
 
