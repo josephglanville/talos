@@ -294,12 +294,12 @@ RUN mkdir -p _out && \
     echo PKGS=${PKGS} >> _out/talos-metadata && \
     echo TAG=${TAG} >> _out/talos-metadata && \
     echo EXTRAS=${EXTRAS} >> _out/talos-metadata
-COPY --from=pkg-kernel /certs/signing_key.x509 _out/signing_key.x509
+# COPY --from=pkg-kernel /certs/signing_key.x509 _out/signing_key.x509
 
 FROM scratch AS embed-abbrev
 COPY --from=embed-abbrev-generate /src/pkg/machinery/gendata/data /pkg/machinery/gendata/data
 COPY --from=embed-abbrev-generate /src/_out/talos-metadata /_out/talos-metadata
-COPY --from=embed-abbrev-generate /src/_out/signing_key.x509 /_out/signing_key.x509
+# COPY --from=embed-abbrev-generate /src/_out/signing_key.x509 /_out/signing_key.x509
 
 FROM scratch AS ipxe-generate
 COPY --from=pkg-ipxe-amd64 /usr/libexec/snp.efi /amd64/snp.efi
