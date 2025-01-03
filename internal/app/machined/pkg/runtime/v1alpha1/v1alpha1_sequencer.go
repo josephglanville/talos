@@ -178,27 +178,31 @@ func (*Sequencer) Install(r runtime.Runtime) []runtime.Phase {
 			).Append(
 				"unmountState",
 				UnmountStatePartition,
-			).Append(
+			).AppendWithDeferredCheck(
+				func() bool {
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
+				},
 				"volumeFinalize",
 				TeardownVolumeLifecycle,
 			).AppendWithDeferredCheck(
 				func() bool {
-					wipe := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
-					return pointer.SafeDeref(wipe) == ""
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
 				},
 				"stopEverything",
 				StopAllServices,
 			).AppendWithDeferredCheck(
 				func() bool {
-					wipe := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
-					return pointer.SafeDeref(wipe) == ""
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
 				},
 				"kexec",
 				KexecPrepare,
 			).AppendWithDeferredCheck(
 				func() bool {
-					wipe := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
-					return pointer.SafeDeref(wipe) == ""
+					ramdisk := procfs.ProcCmdline().Get(constants.KernelParamRamdisk).First()
+					return pointer.SafeDeref(ramdisk) == ""
 				},
 				"reboot",
 				Reboot,
